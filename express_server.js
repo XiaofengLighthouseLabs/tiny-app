@@ -29,8 +29,8 @@ app.get("/urls/new", (req, res) => {
 app.get("/urls/:id", (req, res) => {
   let templateVars = { shortURL: req.params.id };
   if (urlDatabase.hasOwnProperty(req.params.id)){
-    templateVars.fullUrl = urlDatabase[req.params.id];
-  } else templateVars.fullUrl = "Url not in database."
+    templateVars.longURL = urlDatabase[req.params.id];
+  } else templateVars.longURL = "Url not in database."
   res.render("urls_show", templateVars);
 });
 
@@ -45,6 +45,11 @@ app.post("/urls", (req, res) => {
   res.send("Ok");         // Respond with 'Ok' (we will replace this)
 });
 
+var generateRandomString = () => {
+  return Math.floor((Math.random()) * 1e10).toString(32);
+}
+
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
 });
+
