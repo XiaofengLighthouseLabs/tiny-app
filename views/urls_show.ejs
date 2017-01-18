@@ -5,11 +5,21 @@
   <header><%- include('partials/_header') %></header>
 </head>
 <body>
-  <p>Urls</p>
+  <p>Url:</p>
   <ul>
-  <%= longURL  %>
-
+    <h3><a href='localhost:8080/u/<%= shortURL  %>'> localhost:8080/u/<%= shortURL  %></h3> </a>
+  </ul>
+    <p>Navigates to</p>
+  <ul>
+    <h3><a href='<%= longURL %>'><%= longURL  %></h3> </a>
   </ul>
 
+  <form action="/urls/<%= shortURL  %>/update" method="POST" style="margin:150px;">
+      <label for="newURL">Change the URL:</label>
+      <input id="newURL" type="text" name="newURL" placeholder="<%= longURL  %>" style="width: 300px">
+      <input type="submit" value="Submit">
+  </form>
+<br>
+<a href="http://localhost:8080/urls"> Back To Index</a>
 </body>
 </html>

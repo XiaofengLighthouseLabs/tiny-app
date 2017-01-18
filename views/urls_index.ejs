@@ -8,7 +8,15 @@
   <p>Urls</p>
   <ul>
   <% for(var link in url) { %>
-    <li><%= url[link] %> : <%= link %></li>
+    <li>
+      <a href="http://localhost:8080/urls/<%= link %>"> <%= link %> </a> ---> <a href="http://localhost:8080/u/<%= link %>"><%= url[link] %></a>
+      <br>
+        <a href="http://localhost:8080/urls/<%= link %>"><button>Update</button></a>
+      <form action="/urls/<%= link %>/delete" method="POST">
+        <input type="submit" value="Delete">
+      </form>
+      <br>
+    </li>
   <% } %>
   </ul>
 

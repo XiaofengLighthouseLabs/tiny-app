@@ -12,6 +12,11 @@ const urlDatabase = {
   "9sm5xK": "http://www.google.com"
 };
 
+const generateRandomNumber = () => {
+  return Math.floor((Math.random()) * 1e10).toString(32);
+}
+
+
 // GET
 app.get("/", (req, res) => {
   res.end("Hello!");
@@ -26,6 +31,10 @@ app.get("/urls/new", (req, res) => {
   res.render("urls_new");
 });
 
+app.get("/urls.json", (req, res) => {
+  res.json(urlDatabase);
+});
+
 app.get("/urls/:id", (req, res) => {
   let templateVars = { shortURL: req.params.id };
   if (urlDatabase.hasOwnProperty(req.params.id)){
@@ -34,20 +43,36 @@ app.get("/urls/:id", (req, res) => {
   res.render("urls_show", templateVars);
 });
 
-app.get("/urls.json", (req, res) => {
-  res.json(urlDatabase);
+app.get("/u/:shortURL", (req, res) => {
+  // let longURL = ...
+  res.redirect(urlDatabase[req.params.shortURL]);
 });
+
 
 // POST
 
-app.post("/urls", (req, res) => {
-  console.log(req.body);  // debug statement to see POST parameters
-  res.send("Ok");         // Respond with 'Ok' (we will replace this)
+// Delete url
+app.post("/urls/:id/delete", (req, res) => {
+  delete urlDatabase[req.params.id]
+  res.redirect('/urls')
 });
 
-var generateRandomString = () => {
-  return Math.floor((Math.random()) * 1e10).toString(32);
-}
+// Create URL
+app.post("/urls", (req, res) => {
+  let newID = generateRandomNumber()
+  console.log(newID + ':' + req.body.longURL);  // debug statement to see POST parameters
+  urlDatabase[newID] = req.body.longURL
+  console.log(urlDatabase);
+  res.send(`<h3> Shortened ${req.body.longURL} to ${newID}<h3>`);         // Respond with 'Ok' (we will replace this)
+});
+
+// Update URL
+app.post("/urls/:id/update", (req, res) => {
+  console.log(req.body);
+  urlDatabase[req.params.id] = req.body.newURL
+  res.redirect('/urls');         // Respond with 'Ok' (we will replace this)
+});
+
 
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
