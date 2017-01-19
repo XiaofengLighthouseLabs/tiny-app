@@ -26,7 +26,16 @@ const generateRandomNumber = () => {
   return Math.floor((Math.random()) * 1e10).toString(32);
 }
 
-const users = {}
+const users = {
+  "user1Id": {
+    id: "user1Id",
+    email: "user@example.com",
+    password: 'password'},
+  'user2Id': {
+    id: 'user2Id',
+    email: 'user2@example.com',
+    password: 'password'}
+};
 
 // GET
 app.get("/", (req, res) => {
@@ -36,7 +45,8 @@ app.get("/", (req, res) => {
 
 app.get('/urls', (req,res) => {
   let templateVars = { url: urlDatabase, username: req.cookies["username"]};
-  console.log(templateVars);
+  // console.log(templateVars);
+  // console.log(users);
   res.render('urls_index', templateVars);
 });
 
@@ -97,10 +107,35 @@ app.post("/login", (req, res) => {
   res.redirect('/urls');
 });
 
+// Registeration user exists checker
+const regChecker = (email, password) => {
+  console.log('in regChecker');
+  for (randId in users) {
+    if (users[randId].email === email){
+      return true;
+    };
+  } return false;
+};
+
 // Register
 app.post('/register', (req, res) => {
   res.cookie('username', req.body.email);
-  res.cookie('password', req.body.password)
+  res.cookie('password', req.body.password);
+  console.log(regChecker(req.body.email));
+  if (regChecker(req.body.email)) {
+    console.log('Email checker works!');
+    res.status(400).send({ error: 'Email already in database'})
+  }
+
+  else {
+    let newUserId = generateRandomNumber();
+    users[newUserId] = {
+      id: newUserId,
+      email: req.body.email,
+      password: req.body.password
+    }
+
+  };
   res.redirect('/urls');
 });
 app.listen(PORT, () => {
