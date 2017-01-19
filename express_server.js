@@ -26,6 +26,7 @@ const generateRandomNumber = () => {
   return Math.floor((Math.random()) * 1e10).toString(32);
 }
 
+const users = {}
 
 // GET
 app.get("/", (req, res) => {
@@ -60,6 +61,10 @@ app.get("/u/:shortURL", (req, res) => {
   res.redirect(urlDatabase[req.params.shortURL]);
 });
 
+app.get('/register', (req, res) => {
+  let templateVars = { shortURL: req.params.id, username: req.cookies["username"]};
+  res.render('register');
+})
 
 // POST
 
@@ -90,8 +95,14 @@ app.post("/login", (req, res) => {
   res.cookie('username', req.body.username);
   // res.send('Hello', req.body.username)
   res.redirect('/urls');
-})
+});
 
+// Register
+app.post('/register', (req, res) => {
+  res.cookie('username', req.body.email);
+  res.cookie('password', req.body.password)
+  res.redirect('/urls');
+});
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
 });

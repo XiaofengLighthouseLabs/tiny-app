@@ -38,21 +38,22 @@
         <% } else { %>
         <li class="dropdown">
 
-        <!-- This is where you can log into your account!!!!!!!!! -->
 
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Login<span class="caret"></span></a>
           <ul class="dropdown-menu">
+
+        <!-- This is where you can log into your account!!!!!!!!! -->
 
             <form class="navbar-form navbar-left" action="/login" method='POST'>
               <div class="form-group">
 
                 <input type="text" class="form-control" placeholder="username" name='username'>
-                <!-- Password feature not available yet
               </div>
                 <input type="password" class="form-control" placeholder="password">
-                -->
-              <input type="submit" name="Submit">
+              <input value="Login" type="submit" name="Submit">
             </form>
+            <!-- Register Button -->
+            <a href="/register"><button>Register</button></a>
           <% } %>
           </ul>
         </li>
