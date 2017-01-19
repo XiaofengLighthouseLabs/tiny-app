@@ -1,0 +1,41 @@
+#title {
+  text-align: center;
+  font-family: 'Orbitron', sans-serif;
+}
+
+body {
+  background-color: #272822;
+  font-family: sans-serif;
+  color: #66D9EF;
+
+}
+#archiveTitle {
+  text-align: center;
+  font-family: 'Orbitron', sans-serif;
+}
+
+#longURL {
+    width: 50%;
+    box-sizing: border-box;
+    border: 2px solid #ccc;
+    border-radius: 4px;
+    color: black;
+    font-size: 16px;
+    background-color: white;
+    background-position: 10px 10px;
+    background-repeat: no-repeat;
+    padding: 12px 20px 12px 40px;
+    -webkit-transition: width 0.4s ease-in-out;
+    transition: width 0.4s ease-in-out;
+    max-width: 100%
+    align: center;
+}
+
+#longURL:focus {
+    width: 100%;
+}
+
+#customColors {
+  border-right-width: 10%
+  border-right-color: #66D9EF;
+}

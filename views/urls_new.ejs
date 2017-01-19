@@ -1,11 +1,33 @@
-<html lang="en">
-  <head></head>
-  <body style="font-size:20px; padding:50px;">
-    <% include partials/_header %>
-    <form action="/urls" method="POST" style="margin:150px;">
-      <label for="longURL">Enter a URL:</label>
-      <input id="longURL" type="text" name="longURL" placeholder="http://" style="width: 300px">
-      <input type="submit" value="Submit">
-    </form>
-  </body>
+<!DOCTYPE html>
+<html>
+<head>
+  <title>TinyApp</title>
+
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- CSS for Bootstrap -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <link type='text/css' rel='stylesheet' href='/stylesheets/style.css'>
+  <link href="https://fonts.googleapis.com/css?family=Orbitron" rel="stylesheet">
+
+</head>
+<body style="padding-top: 8%">
+  <div class='container' id="customColors">
+    <header><%- include('partials/_header') %></header>
+    <div align='center' style="padding-top: 10%">
+      <form action="/urls" method="POST">
+        <label for="longURL"></label>
+        <input id="longURL" type="text" name="longURL" placeholder="http://">
+      </form>
+    </div>
+  </div>
+
+  <!-- jQuery -->
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+
+  <!-- Bootstrap JS -->
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</body>
 </html>

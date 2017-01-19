@@ -2,23 +2,101 @@
 <html>
 <head>
   <title>TinyApp</title>
-  <header><%- include('partials/_header') %></header>
+
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- CSS for Bootstrap -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
+  <!-- TABLES THIS COULD BE AMAZING -->
+  <link href="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/css/bootstrap-editable.css" rel="stylesheet"/>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/bootstrap3-editable/js/bootstrap-editable.min.js"></script>
+
+  <!-- My stylesheet -->
+  <link type='text/css' rel='stylesheet' href='/stylesheets/style.css'>
+
+  <!-- This is my cool font -->
+  <link href="https://fonts.googleapis.com/css?family=Orbitron" rel="stylesheet">
+
+  <!-- This is a navbar I just copy pasted from bootstrap -->
+<nav class="navbar navbar-default">
+  <div class="container-fluid">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header">
+
+      </button>
+      <a class="navbar-brand" href="#">TinyApp</a>
+    </div>
+
+    <!-- This is another place you can add a new URL -->
+    <form class="navbar-form navbar-left" action="/urls" method="POST">
+      <div class="form-group">
+        <label for="longURL"></label>
+        <input type="text" name="longURL" class="form-control" placeholder="Add a new url:">
+      </div>
+    </form>
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+      <ul class="nav navbar-nav">
+      </ul>
+
+      <ul class="nav navbar-nav navbar-right">
+        <li class="dropdown">
+        <!-- This is where you can log into your account -->
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Log In <span class="caret"></span></a>
+          <ul class="dropdown-menu">
+            <form class="navbar-form navbar-left">
+              <div class="form-group">
+                <input type="text" class="form-control" placeholder="username">
+              </div>
+                <input type="text" class="form-control" placeholder="password">
+            </form>
+          </ul>
+        </li>
+      </ul>
+    </div><!-- /.navbar-collapse -->
+  </div><!-- /.container-fluid -->
+</nav>
+  <div style="padding-top: 1%">
+      <h1 id='archiveTitle'>Url Archive</h1>
+  </div>
+</header>
 </head>
 <body>
-  <p>Urls</p>
-  <ul>
-  <% for(var link in url) { %>
-    <li>
-      <a href="http://localhost:8080/urls/<%= link %>"> <%= link %> </a> ---> <a href="http://localhost:8080/u/<%= link %>"><%= url[link] %></a>
-      <br>
-        <a href="http://localhost:8080/urls/<%= link %>"><button>Update</button></a>
-      <form action="/urls/<%= link %>/delete" method="POST">
-        <input type="submit" value="Delete">
-      </form>
-      <br>
-    </li>
-  <% } %>
-  </ul>
+<!-- -->
+<div class="container" style='margin-left: 0px; margin-right: 0px; width: 100%'>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Short Url</th>
+        <th>Full Url</th>
+        <th style='padding-left: 20%'></th>
+      </tr>
+    </thead>
+    <tbody>
+    <% for(var link in url) { %>
+      <tr>
+        <td><a href="http://localhost:8080/urls/<%= link %>"> <%= link %> </a></td>
+        <td><a href="http://localhost:8080/u/<%= link %>"><%= url[link] %></td>
+        <td><a href="http://localhost:8080/urls/<%= link %>"><button>Update</button></a>
+            <form action="/urls/<%= link %>/delete" method="POST">
+              <button>Delete</button>
+            </form>
+        </td>
+        <% } %>
 
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!--   -->
+<!-- jQuery -->
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+
+  <!-- Bootstrap JS -->
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </body>
 </html>

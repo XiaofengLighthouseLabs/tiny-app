@@ -6,6 +6,7 @@ const bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({extended: true}));
 
 app.set("view engine", "ejs");
+app.use(express.static(__dirname + '/public'));
 
 const urlDatabase = {
   "b2xVn2": "http://www.lighthouselabs.ca",
@@ -19,7 +20,8 @@ const generateRandomNumber = () => {
 
 // GET
 app.get("/", (req, res) => {
-  res.end("Hello!");
+  let templateVars = { url: urlDatabase };
+  res.render('index', templateVars);
 });
 
 app.get('/urls', (req,res) => {
@@ -63,13 +65,13 @@ app.post("/urls", (req, res) => {
   console.log(newID + ':' + req.body.longURL);  // debug statement to see POST parameters
   urlDatabase[newID] = req.body.longURL
   console.log(urlDatabase);
-  res.send(`<h3> Shortened ${req.body.longURL} to ${newID}<h3>`);         // Respond with 'Ok' (we will replace this)
+  res.redirect('/urls')
 });
 
 // Update URL
 app.post("/urls/:id/update", (req, res) => {
   console.log(req.body);
-  urlDatabase[req.params.id] = req.body.newURL
+  urlDatabase[req.params.id] = req.body.newURL;
   res.redirect('/urls');         // Respond with 'Ok' (we will replace this)
 });
 
@@ -77,4 +79,3 @@ app.post("/urls/:id/update", (req, res) => {
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
 });
-
