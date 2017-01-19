@@ -3,8 +3,17 @@ const app = express();
 const PORT = process.env.PORT || 8080; // default port 8080
 
 const bodyParser = require("body-parser");
+const cookieParser = require('cookie-parser')
+
+
 app.use(bodyParser.urlencoded({extended: true}));
 
+app.use(cookieParser());
+
+/*app.use(express.session({
+
+}))
+*/
 app.set("view engine", "ejs");
 app.use(express.static(__dirname + '/public'));
 
@@ -20,12 +29,13 @@ const generateRandomNumber = () => {
 
 // GET
 app.get("/", (req, res) => {
-  let templateVars = { url: urlDatabase };
+  let templateVars = { url: urlDatabase, username: req.cookies["username"]};
   res.render('index', templateVars);
 });
 
 app.get('/urls', (req,res) => {
-  let templateVars = { url: urlDatabase };
+  let templateVars = { url: urlDatabase, username: req.cookies["username"]};
+  console.log(templateVars);
   res.render('urls_index', templateVars);
 });
 
@@ -38,7 +48,7 @@ app.get("/urls.json", (req, res) => {
 });
 
 app.get("/urls/:id", (req, res) => {
-  let templateVars = { shortURL: req.params.id };
+  let templateVars = { shortURL: req.params.id, username: req.cookies["username"]};
   if (urlDatabase.hasOwnProperty(req.params.id)){
     templateVars.longURL = urlDatabase[req.params.id];
   } else templateVars.longURL = "Url not in database."
@@ -75,6 +85,12 @@ app.post("/urls/:id/update", (req, res) => {
   res.redirect('/urls');         // Respond with 'Ok' (we will replace this)
 });
 
+// Login
+app.post("/login", (req, res) => {
+  res.cookie('username', req.body.username);
+  // res.send('Hello', req.body.username)
+  res.redirect('/urls');
+})
 
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
