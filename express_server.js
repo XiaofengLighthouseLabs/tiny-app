@@ -17,15 +17,7 @@ app.use(cookieParser());
 app.set("view engine", "ejs");
 app.use(express.static(__dirname + '/public'));
 
-const urlDatabase = {
-  "b2xVn2": "http://www.lighthouselabs.ca",
-  "9sm5xK": "http://www.google.com"
-};
-
-const generateRandomNumber = () => {
-  return Math.floor((Math.random()) * 1e10).toString(32);
-}
-
+// Globals
 const users = {
   "user1Id": {
     id: "user1Id",
@@ -37,14 +29,49 @@ const users = {
     password: 'password'}
 };
 
+const urlDatabase = {
+  "b2xVn2": "http://www.lighthouselabs.ca",
+  "9sm5xK": "http://www.google.com"
+};
+
+// Generate random number for Id's
+const generateRandomNumber = () => {
+  return Math.floor((Math.random()) * 1e10).toString(32);
+}
+
+// Registeration user exists checker
+const regChecker = (email, password) => {
+
+  // This is used to check if email matches
+  if (password === undefined) {
+    for (randId in users) {
+      if (users[randId].email === email){
+        return true;
+      };
+    } return false;
+  };
+
+  // This checks if email and password matches (This needs to be refactored...)
+  for (randId in users) {
+
+    if (users[randId].email === email && users[randId].password === password){
+      return randId;
+    };
+  } return false;
+};
+
+
+
 // GET
 app.get("/", (req, res) => {
-  let templateVars = { url: urlDatabase, username: req.cookies["username"]};
+  let templateVars = { url: urlDatabase, username: users[req.cookies["user_id"]]};
+
+  // console.log(users[req.cookies]);
   res.render('index', templateVars);
 });
 
 app.get('/urls', (req,res) => {
-  let templateVars = { url: urlDatabase, username: req.cookies["username"]};
+  let templateVars = { url: urlDatabase, username: users[req.cookies["user_id"]]};
   // console.log(templateVars);
   // console.log(users);
   res.render('urls_index', templateVars);
@@ -59,7 +86,7 @@ app.get("/urls.json", (req, res) => {
 });
 
 app.get("/urls/:id", (req, res) => {
-  let templateVars = { shortURL: req.params.id, username: req.cookies["username"]};
+  let templateVars = { shortURL: req.params.id, username: req.cookies["user_id"]};
   if (urlDatabase.hasOwnProperty(req.params.id)){
     templateVars.longURL = urlDatabase[req.params.id];
   } else templateVars.longURL = "Url not in database."
@@ -72,11 +99,11 @@ app.get("/u/:shortURL", (req, res) => {
 });
 
 app.get('/register', (req, res) => {
-  let templateVars = { shortURL: req.params.id, username: req.cookies["username"]};
+  let templateVars = { shortURL: req.params.id, username: req.cookies["user_id"]};
   res.render('register');
 })
 
-// POST
+// --------- POST
 
 // Delete url
 app.post("/urls/:id/delete", (req, res) => {
@@ -102,42 +129,46 @@ app.post("/urls/:id/update", (req, res) => {
 
 // Login
 app.post("/login", (req, res) => {
-  res.cookie('username', req.body.username);
-  // res.send('Hello', req.body.username)
-  res.redirect('/urls');
+  // res.send('Hello', req.body.username);
+  // should return user_id, which is a random string
+  if (regChecker(req.body.email, req.body.password) !== false) {
+    res.cookie('user_id', regChecker(req.body.email, req.body.password));
+    res.redirect('/urls');
+  } else { res.status(403).send({error: "username and password do not match"})};
+  // res.cookie('username', req.body.email);
+  // res.cookie('password', req.body.password);
 });
 
-// Registeration user exists checker
-const regChecker = (email, password) => {
-  console.log('in regChecker');
-  for (randId in users) {
-    if (users[randId].email === email){
-      return true;
-    };
-  } return false;
-};
+// Logout
+app.post('/logout', (req, res) => {
+  res.cookie('user_id', 'uselessvalue', {expires: new Date(0)});
+  res.redirect('/');
+});
+
 
 // Register
 app.post('/register', (req, res) => {
-  res.cookie('username', req.body.email);
-  res.cookie('password', req.body.password);
+
   console.log(regChecker(req.body.email));
-  if (regChecker(req.body.email)) {
+  if (req.body.email === '' || req.body.password === '') {
+    res.status(400).send({error: 'Email or password empty'});
+  } else if (regChecker(req.body.email)) {
     console.log('Email checker works!');
     res.status(400).send({ error: 'Email already in database'})
-  }
-
-  else {
+  } else {
     let newUserId = generateRandomNumber();
     users[newUserId] = {
       id: newUserId,
       email: req.body.email,
       password: req.body.password
-    }
+    };
+    res.cookie('user_id', newUserId);
+    res.redirect('/urls');
 
   };
-  res.redirect('/urls');
+
 });
+
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
 });

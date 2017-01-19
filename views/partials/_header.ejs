@@ -26,14 +26,14 @@
         <% if (username !== undefined) { %>
           <li class="dropdown">
 
-        <!-- This is where you can log into your account!!!!!!!!! -->
-
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Hello, <%= username %><span class="caret"></span></a>
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Hello, <%= username.email %><span class="caret"></span></a>
           <ul class="dropdown-menu">
 
-            <form class="navbar-form navbar-left" action="#" method='POST'>
+          <!-- THIS IS THE LOGOUT UBTTON -->
+
+            <form class="navbar-form navbar-left" action="/logout" method='POST'>
               <div class="form-group">
-                <button>logout</button>
+                <input value='Logout' type='submit'>
             </form>
         <% } else { %>
         <li class="dropdown">
@@ -46,10 +46,13 @@
 
             <form class="navbar-form navbar-left" action="/login" method='POST'>
               <div class="form-group">
+              <!-- email -->
+                <input type="text" class="form-control" placeholder="username" name='email'>
 
-                <input type="text" class="form-control" placeholder="username" name='username'>
               </div>
-                <input type="password" class="form-control" placeholder="password">
+              <!-- password -->
+                <input type="password" class="form-control" placeholder="password" name='password'>
+
               <input value="Login" type="submit" name="Submit">
             </form>
             <!-- Register Button -->
