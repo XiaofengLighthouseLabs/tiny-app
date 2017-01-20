@@ -33,7 +33,7 @@ const urlDatabase = {
   "b2xVn2": {
     longURL: "http://www.lighthouselabs.ca",
     createdBy: 'user1Id'},
-  "9sm5xK": {
+  '9sm5xK': {
     longURL: "http://www.google.com",
     createdBy: 'user1Id'}
 };
@@ -64,32 +64,55 @@ const regChecker = (email, password) => {
   } return false;
 };
 
+// Reverse an object
+// const reverseObject = (object) => {
+//   let tempArray = [];
+//   let outputObject = {}
+//   for (item in obj) {
+//     tempArray.push(item);
+//   };
+//   tempArray.reverse();
+//   tempArray.forEach((thing) => {
+//     outputObject[]
+//   }
+// }
 
 
-// GET
+// ------------ GET
+
+
 app.get("/", (req, res) => {
   let templateVars = { url: urlDatabase, username: users[req.cookies["user_id"]]};
 
-  // console.log(users[req.cookies]);
   res.render('index', templateVars);
 });
 
 app.get('/urls', (req,res) => {
-  let templateVars = { url: urlDatabase, username: users[req.cookies["user_id"]]};
-  // console.log(templateVars);
-  // console.log(users);
-  // console.log(req.cookies);
+  let customLinks = {}
+  for (let link in urlDatabase){
+    if (urlDatabase[link].createdBy === req.cookies['user_id']){
+      customLinks[link] = urlDatabase[link];
+    };
+  };
+  let templateVars = { url: customLinks,
+    username: users[req.cookies["user_id"]]
+  };
+
   res.render('urls_index', templateVars);
 });
+
+/*
 
 app.get("/urls/new", (req, res) => {
   res.render("urls_new");
 });
+*/
 
 app.get("/urls.json", (req, res) => {
   res.json(urlDatabase);
 });
 
+/*
 app.get("/urls/:id", (req, res) => {
   let templateVars = { shortURL: req.params.id, username: req.cookies["user_id"]};
   if (urlDatabase.hasOwnProperty(req.params.id)){
@@ -97,10 +120,10 @@ app.get("/urls/:id", (req, res) => {
   } else templateVars.longURL = "Url not in database."
   res.render("urls_show", templateVars);
 });
+*/
 
 app.get("/u/:shortURL", (req, res) => {
   // let longURL = ...
-  console.log(urlDatabase[req.params.shortURL]);
   res.redirect(urlDatabase[req.params.shortURL].longURL);
 });
 
@@ -162,11 +185,9 @@ app.post('/logout', (req, res) => {
 // Register
 app.post('/register', (req, res) => {
 
-  console.log(regChecker(req.body.email));
   if (req.body.email === '' || req.body.password === '') {
     res.status(400).send({error: 'Email or password empty'});
   } else if (regChecker(req.body.email)) {
-    console.log('Email checker works!');
     res.status(400).send({ error: 'Email already in database'})
   } else {
     let newUserId = generateRandomNumber();

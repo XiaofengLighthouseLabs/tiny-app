@@ -8,9 +8,15 @@
 
   <!-- CSS for Bootstrap -->
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
+  <!-- My CSS -->
   <link type='text/css' rel='stylesheet' href='/stylesheets/style.css'>
+
+  <!-- Google font -->
   <link href="https://fonts.googleapis.com/css?family=Orbitron" rel="stylesheet">
-  <link type='text/css' rel='stylesheet' href='/stylesheets/style.css'>
+
+  <!-- CSS for animations -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
 
 
 </head>
@@ -19,13 +25,15 @@
     <%- include('partials/_header') %>
     <h1>Tiny<a style='color: #A6E22E'>URL</a></h1>
     <h3 style='color:#FD971F'>Make Your URL's Slightly Shorter!</h3>
-    <div align='center' style="padding-top: 10%">
-      <form action="/urls" method="POST">
-        <label for="longURL"></label>
-        <input id="longURL" type="text" name="longURL" placeholder="http://">
-      </form>
-    </div>
+
+    <!-- Shows Please Sign in -->
+    <% if (username === undefined) { %>
+      <h2 align='center' class='animated bounce' style='color:#F92672; padding-top: 10%; padding-bottom: 10%'> < Please Sign In ></h2>
+    <% } %>
+
   </div>
+
+
 
   <!-- jQuery -->
 

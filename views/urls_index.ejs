@@ -15,6 +15,10 @@
   <!-- This is my cool font -->
   <link href="https://fonts.googleapis.com/css?family=Orbitron" rel="stylesheet">
 
+  <!-- CSS Animations -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
+
+
      <%- include('partials/_header') %>
 
  </head>
@@ -22,6 +26,12 @@
    <div style="padding-top: 1%">
       <h1 id='archiveTitle'>Url <a style='color: #A6E22E'>Archive</a></h1>
   </div>
+
+  <% if (username === undefined) { %>
+
+    <h2 align='center' class='animated bounce' style='color:#FD971F; padding-top: 10%; padding-bottom: 10%'> Please Sign In </h2>
+
+  <% } %>
 <div style='margin-left: 0px; margin-right: 0px; width: 100%, background-color: #272822'>
   <table class="table">
     <thead>
@@ -36,6 +46,7 @@
 <!-- There is where I use express js to loop over the database and create a table -->
 
     <% for(let link in url) { %>
+  <!--  -->
       <tr>
         <td style='padding-left: 5%' style='color: #66D9EF'>
           <a href="/u/<%= link %>"> <%= link %> </a></td>
