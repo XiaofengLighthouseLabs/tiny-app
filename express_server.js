@@ -5,6 +5,10 @@ const PORT = process.env.PORT || 8080; // default port 8080
 const bodyParser = require("body-parser");
 const cookieParser = require('cookie-parser')
 
+const bcrypt = require('bcrypt');
+const password = "purple-monkey-dinosaur"; // you will probably this from req.params
+const hashed_password = bcrypt.hashSync(password, 10);
+bcrypt.compareSync("purple-monkey-dinosaur", hashed_password); // returns true
 
 app.use(bodyParser.urlencoded({extended: true}));
 
@@ -16,6 +20,7 @@ app.use(cookieParser());
 */
 app.set("view engine", "ejs");
 app.use(express.static(__dirname + '/public'));
+
 
 // Globals
 const users = {
@@ -54,16 +59,7 @@ const regChecker = (email, password) => {
       };
     } return false;
   };
-
-  // This checks if email and password matches (This needs to be refactored...)
-  for (randId in users) {
-
-    if (users[randId].email === email && users[randId].password === password){
-      return randId;
-    };
-  } return false;
 };
-
 // Reverse an object
 // const reverseObject = (object) => {
 //   let tempArray = [];
@@ -97,7 +93,6 @@ app.get('/urls', (req,res) => {
   let templateVars = { url: customLinks,
     username: users[req.cookies["user_id"]]
   };
-
   res.render('urls_index', templateVars);
 });
 
@@ -165,14 +160,17 @@ app.post("/urls/:id/update", (req, res) => {
 
 // Login
 app.post("/login", (req, res) => {
-  // res.send('Hello', req.body.username);
-  // should return user_id, which is a random string
-  if (regChecker(req.body.email, req.body.password) !== false) {
-    res.cookie('user_id', regChecker(req.body.email, req.body.password));
-    res.redirect('/urls');
-  } else { res.status(403).send({error: "username and password do not match"})};
-  // res.cookie('username', req.body.email);
-  // res.cookie('password', req.body.password);
+  for (user in users) {
+
+    if (users[user].email === req.body.email && bcrypt.compareSync(req.body.password, users[user].password)) {
+
+
+      res.cookie('user_id', users[user].id);
+      res.redirect('/urls');
+      return;
+    };
+  };
+  res.status(403).send({error: 'User and Password do not match'});
 });
 
 // Logout
@@ -194,7 +192,7 @@ app.post('/register', (req, res) => {
     users[newUserId] = {
       id: newUserId,
       email: req.body.email,
-      password: req.body.password
+      password: bcrypt.hashSync(req.body.password, 10)
     };
     res.cookie('user_id', newUserId);
     res.redirect('/urls');
