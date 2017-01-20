@@ -30,8 +30,12 @@ const users = {
 };
 
 const urlDatabase = {
-  "b2xVn2": "http://www.lighthouselabs.ca",
-  "9sm5xK": "http://www.google.com"
+  "b2xVn2": {
+    longURL: "http://www.lighthouselabs.ca",
+    createdBy: 'user1Id'},
+  "9sm5xK": {
+    longURL: "http://www.google.com",
+    createdBy: 'user1Id'}
 };
 
 // Generate random number for Id's
@@ -74,6 +78,7 @@ app.get('/urls', (req,res) => {
   let templateVars = { url: urlDatabase, username: users[req.cookies["user_id"]]};
   // console.log(templateVars);
   // console.log(users);
+  // console.log(req.cookies);
   res.render('urls_index', templateVars);
 });
 
@@ -95,7 +100,8 @@ app.get("/urls/:id", (req, res) => {
 
 app.get("/u/:shortURL", (req, res) => {
   // let longURL = ...
-  res.redirect(urlDatabase[req.params.shortURL]);
+  console.log(urlDatabase[req.params.shortURL]);
+  res.redirect(urlDatabase[req.params.shortURL].longURL);
 });
 
 app.get('/register', (req, res) => {
@@ -113,18 +119,25 @@ app.post("/urls/:id/delete", (req, res) => {
 
 // Create URL
 app.post("/urls", (req, res) => {
-  let newID = generateRandomNumber()
-  console.log(newID + ':' + req.body.longURL);  // debug statement to see POST parameters
-  urlDatabase[newID] = req.body.longURL
-  console.log(urlDatabase);
-  res.redirect('/urls')
+  if (users.hasOwnProperty(req.cookies['user_id'])) {
+    let newID = generateRandomNumber()
+    urlDatabase[newID] = {
+      longURL: req.body.longURL,
+      createdBy: req.cookies['user_id']
+    },
+    res.redirect('/urls')
+  } else {res.status(403).send({error: 'Please Log In'})};
 });
 
 // Update URL
 app.post("/urls/:id/update", (req, res) => {
-  console.log(req.body);
-  urlDatabase[req.params.id] = req.body.newURL;
-  res.redirect('/urls');         // Respond with 'Ok' (we will replace this)
+  if (users.hasOwnProperty(req.cookies['user_id'])) {
+    urlDatabase[req.params.id] = {
+      longURL: req.body.newURL,
+      createdBy: req.cookies['user_id']
+    },
+    res.redirect('/urls')
+  } else {res.status(403).send({error: 'Please Log In'})};
 });
 
 // Login
