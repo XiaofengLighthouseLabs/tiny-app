@@ -19,53 +19,64 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
 
 
-     <%- include('partials/_header') %>
+  <%- include('partials/_header') %>
 
- </head>
+</head>
 <body style="background-color:#272822; font-family: 'Orbitron', sans-serif; color:#66D9EF">
    <div style="padding-top: 1%">
-      <h1 id='archiveTitle'>Url <a style='color: #A6E22E'>Archive</a></h1>
+    <h1 id='archiveTitle'>Url <a style='color: #A6E22E'>Archive</a></h1>
   </div>
 
   <% if (username === undefined) { %>
+    <h2 align='center' class='animated bounce' style='color:#FD971F; padding-top: 10%; padding-bottom: 10%'>
+      <p> 401 </p>
+      <p> Please Sign In </p>
+    </h2>
+  <% } else { %>
 
-    <h2 align='center' class='animated bounce' style='color:#FD971F; padding-top: 10%; padding-bottom: 10%'> Please Sign In </h2>
+    <div style='margin-left: 0px; margin-right: 0px; width: 100%, background-color: #272822'>
+      <table class="table">
 
-  <% } %>
-<div style='margin-left: 0px; margin-right: 0px; width: 100%, background-color: #272822'>
-  <table class="table">
-    <thead>
-      <tr>
-        <th style='padding-left: 5%' width='200px'>Short Url</th>
-        <th style='color: #A6E22E'>Full Url</th>
-        <th style='padding-left: 5%' width='50px'></th>
-      </tr>
-    </thead>
-    <tbody>
+        <!-- This is the Header of the Table -->
+        <thead>
+          <tr>
+            <th style='padding-left: 5%' width='200px'>
+              Short Url
+            </th>
+            <th style='color: #A6E22E'>
+              Full Url
+            </th>
+            <th style='padding-left: 5%' width='50px'></th>
+          </tr>
+        </thead>
 
-<!-- There is where I use express js to loop over the database and create a table -->
+        <!-- There is the dynamic table-->
+        <tbody>
+        <% for(let link in url) { %>
+          <tr>
 
-    <% for(let link in url) { %>
-  <!--  -->
-      <tr>
-        <td style='padding-left: 5%' style='color: #66D9EF'>
-          <a href="/u/<%= link %>"> <%= link %> </a></td>
-        <td style='color: #A6E22E'>
-          <form action="/urls/<%= link  %>/update" method="POST">
+            <!-- First Column, the shortURL -->
+            <td style='padding-left: 5%' style='color: #66D9EF'>
+              <a href="/u/<%= link %>">
+                <%= link %>
+              </a>
+            </td>
 
-            <input class="form-control" id="newURL" type="text" name="newURL" value="<%= url[link].longURL %>" style='width: 100%; background-color: #4F4F57; color: #A6E22E; height:28px'>
+            <!-- Second Column, the longURL -->
+            <td style='color: #A6E22E'>
+              <form action="/urls/<%= link  %>/update" method="POST">
+                <input class="form-control" id="newURL" type="text" name="newURL" value="<%= url[link].longURL %>" style='width: 100%; background-color: #4F4F57; color: #A6E22E; height:28px'>
+              </form>
 
-          </form>
-        <td style='padding-right: 2%'>
-            <form action="/urls/<%= link %>/delete" method="POST" align='right'>
-
-              <input class="form-control" type="submit" name="newURL" value='Delete' style='width: 100%; background-color: #4F4F57; color:#FD971F; height:28px'>
-
-            </form>
-        </td>
+            <!-- Third Column, the delete button -->
+            <td style='padding-right: 2%'>
+                <form action="/urls/<%= link %>/delete" method="POST" align='right'>
+                  <input class="form-control" type="submit" name="newURL" value='Delete' style='width: 100%; background-color: #4F4F57; color:#FD971F; height:28px'>
+                </form>
+            </td>
+          </tr>
         <% } %>
-
-      </tr>
+      <% } %>
     </tbody>
   </table>
 </div>
