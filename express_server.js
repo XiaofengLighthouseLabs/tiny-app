@@ -11,11 +11,11 @@ const bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({extended: true}));
 
 // Handles cookies
-const cookieSession = require('cookie-session')
+const cookieSession = require('cookie-session');
 app.use(cookieSession({
   name: 'session',
   secret: 'SuperSecureSecret'
-}))
+}));
 
 // Encyrpts cookies
 const bcrypt = require('bcrypt');
@@ -28,7 +28,7 @@ const users = {
   "userId": {
     id: "userId",
     email: "user@example.com",
-    password: bcrypt.hashSync('password', 10)},
+    password: bcrypt.hashSync('password', 10)}
 };
 
 const urlDatabase = {
@@ -43,7 +43,7 @@ const urlDatabase = {
 // Generate random number for Id's
 const generateRandomNumber = () => {
   return Math.floor((Math.random()) * 1e10).toString(32);
-}
+};
 
 // Registeration email exists checker
 const regChecker = (email, password) => {
@@ -51,9 +51,9 @@ const regChecker = (email, password) => {
     for (randId in users) {
       if (users[randId].email === email){
         return true;
-      };
+      }
     } return false;
-  };
+  }
 };
 
 // This checks if the current userid (from the cookie) matches with the database
@@ -63,7 +63,7 @@ const userChecker = (currentUser) => {
       return true;
     }
   } return false;
-}
+};
 // ------------------------ GET ENDPOINTS ------------------------
 
 // Root Page
@@ -76,15 +76,20 @@ app.get("/", (req, res) => {
   }
 });
 
+// Login, redirects to root. ****Not Actively Linked****
+app.get('/login', (req, res) => {
+  res.redirect('/');
+});
+
 // Main Page
-app.get('/urls', (req,res) => {
+app.get('/urls', (req, res) => {
   if (userChecker(req.session.user_id)) {
-    let customLinks = {}
+    let customLinks = {};
     for (let link in urlDatabase){
       if (urlDatabase[link].createdBy === req.session.user_id){
         customLinks[link] = urlDatabase[link];
-      };
-    };
+      }
+    }
     let templateVars = {
       url: customLinks,
       username: users[req.session.user_id]
@@ -95,15 +100,15 @@ app.get('/urls', (req,res) => {
   }
 });
 
-// New Link Page
-app.get('/urls/new', (req,res) => {
+// New Link Page ****Not Actively Linked****
+app.get('/urls/new', (req, res) => {
   if (userChecker(req.session.user_id)) {
-    let customLinks = {}
+    let customLinks = {};
     for (let link in urlDatabase){
       if (urlDatabase[link].createdBy === req.session.user_id){
         customLinks[link] = urlDatabase[link];
-      };
-    };
+      }
+    }
     let templateVars = {
       url: customLinks,
       username: users[req.session.user_id]
@@ -114,10 +119,10 @@ app.get('/urls/new', (req,res) => {
   }
 });
 
-// Url Custom Page
-app.get('/urls/:id', (req,res) => {
+// Url Custom Page ****Not Actively Linked****
+app.get('/urls/:id', (req, res) => {
   if (!(urlDatabase[req.params.id])) {
-    res.status(404).send('Error: 404: Page not found. <a href="/"> Login </a>');
+    res.status(404).send('Error: 404: Page not found. <a href="/"> Go Back </a>');
     return;
   } if (!req.session.user_id) {
     res.status(401).send('Error: 401: You are not authorized, Please <a href="/"> Login </a>');
@@ -139,52 +144,64 @@ app.get('/urls/:id', (req,res) => {
 
 // This is the short link that redirects to long url
 app.get("/u/:shortURL", (req, res) => {
-  if(!urlDatabase[req.params.shortURL].longURL) {
-    res.status(404).send({error: '404: Not found'});
+  if(!urlDatabase[req.params.shortURL]) {
+    res.status(404).send('Error: 404: Page not found. <a href="/"> Go Back </a>');
   }
-  res.redirect(urlDatabase[req.params.shortURL].longURL);   // TODO: JH suspects a bug here
+  res.redirect(urlDatabase[req.params.shortURL].longURL);
 });
 
 
 // Registration Page
 app.get('/register', (req, res) => {
-  let templateVars = { shortURL: req.params.id, username: req.session.user_id};
-  res.render('register');
-})
+  if (userChecker(req.session.user_id)){
+    res.redirect('/');
+  } res.render('register');
+});
 
 // ------------------------ POST ------------------------
 
 // Delete url
 app.post("/urls/:id/delete", (req, res) => {
   if (userChecker(req.session.user_id)) {
-    delete urlDatabase[req.params.id]
+    delete urlDatabase[req.params.id];
     res.redirect('/urls');
   } else {
-    res.status(403).send({error: '403: You are not allowed to delete this'})
-  };
+    res.status(403).send('403: You are not allowed to delete this');
+  }
 });
 
 // Create URL
 app.post("/urls", (req, res) => {
   if (userChecker(req.session.user_id)) {
-      let newID = generateRandomNumber()
-      urlDatabase[newID] = {
-        longURL: req.body.longURL,
-        createdBy: req.session.user_id
-      },
-      res.redirect('/urls');
-  } else {res.status(403).send({error: 'Please Log In'})};
+    let newID = generateRandomNumber();
+    urlDatabase[newID] = {
+      longURL: req.body.longURL,
+      createdBy: req.session.user_id
+    };
+    res.redirect('/urls');
+  } else {
+    res.status(401).send('Error: 401: You are not authorized, Please <a href="/"> Login </a>');
+  }
 });
 
 // Update URL
-app.post("/urls/:id/update", (req, res) => {
-  if (userChecker(req.session.user_id)) {
+app.post("/urls/:id", (req, res) => {
+  if (!(urlDatabase[req.params.id])) {
+    res.status(404).send('Error: 404: Page not found. <a href="/"> Go Back </a>');
+    return;
+  } if (!req.session.user_id) {
+    res.status(401).send('Error: 401: You are not authorized, Please <a href="/"> Login </a>');
+    return;
+  } if (urlDatabase[req.params.id].createdBy !== req.session.user_id) {
+    res.status(403).send('Error: 403: This is not your link! Please <a href="/"> Go Back </a>');
+    return;
+  } if (userChecker(req.session.user_id)) {
     urlDatabase[req.params.id] = {
       longURL: req.body.newURL,
       createdBy: req.session.user_id
-    },
-    res.redirect('/urls')
-  } else {res.status(401).send({error: 'Please Log In'})};
+    };
+    res.redirect('/urls');
+  }
 });
 
 // Login
@@ -195,8 +212,8 @@ app.post("/login", (req, res) => {
       req.session.user_id = users[user].id;
       res.redirect('/urls');
       return;
-    };
-  };
+    }
+  }
   res.status(401).send({error: 'User and Password do not match'});
 });
 
@@ -210,10 +227,9 @@ app.post('/logout', (req, res) => {
 app.post('/register', (req, res) => {
   // checks if email or password is empty
   if (req.body.email === '' || req.body.password === '') {
-    res.status(400).send({error: 'Email or password empty'});
-  } // checks if email is in database
-  else if (regChecker(req.body.email)) {
-    res.status(400).send({ error: 'Email already in database'});
+    res.status(400).send('Email or password empty. <a href="/register">Go Back</a>');
+  } else if (regChecker(req.body.email)) {
+    res.status(400).send('Email already in database. Forgot? Well too bad. Make a new one. <a href="/register">Go Back</a>');
   } else {
     // generates a new id and assigns it into database
     let newUserId = generateRandomNumber();
@@ -224,7 +240,7 @@ app.post('/register', (req, res) => {
     };
     req.session.user_id = newUserId;
     res.redirect('/urls');
-  };
+  }
 });
 
 // This is where the magic begins

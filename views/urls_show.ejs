@@ -6,11 +6,11 @@
 <body>
 <p>Url:</p>
 
-<h3><a href='/u/'> <%= url %></h3> </a>
+<h3><a href='/u/'> http://localhost:3000/u/<%= url %></h3> </a>
 <p>Navigates to</p>
 <h3><a href=''><%= long %></h3> </a>
 
-<form action="/urls/<%= url  %>/update" method="POST">
+<form action="/urls/<%= url  %>" method="POST">
 <input class="form-control" id="newURL" type="text" name="newURL" value="<%= long %>" style='width: 100%; background-color: #4F4F57; color: #A6E22E; height:28px'>
 </form>
 

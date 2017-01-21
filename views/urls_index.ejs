@@ -56,15 +56,15 @@
           <tr>
 
             <!-- First Column, the shortURL -->
-            <td style='padding-left: 5%' style='color: #66D9EF'>
+            <td style='padding-left: 1%' style='color: #66D9EF'>
               <a href="/u/<%= link %>">
-                <%= link %>
+                http://localhost:3000/u/<%= link %>
               </a>
             </td>
 
             <!-- Second Column, the longURL -->
             <td style='color: #A6E22E'>
-              <form action="/urls/<%= link  %>/update" method="POST">
+              <form action="/urls/<%= link  %>" method="POST">
                 <input class="form-control" id="newURL" type="text" name="newURL" value="<%= url[link].longURL %>" style='width: 100%; background-color: #4F4F57; color: #A6E22E; height:28px'>
               </form>
 
