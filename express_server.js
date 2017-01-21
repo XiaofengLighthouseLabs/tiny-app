@@ -91,8 +91,50 @@ app.get('/urls', (req,res) => {
     };
     res.render('urls_index', templateVars);
   } else {
-    res.status(401).send({error: '401: You are not authorized'});
+    res.status(401).send('Error: 401: You are not authorized, Please <a href="/"> Login </a>');
   }
+});
+
+// New Link Page
+app.get('/urls/new', (req,res) => {
+  if (userChecker(req.session.user_id)) {
+    let customLinks = {}
+    for (let link in urlDatabase){
+      if (urlDatabase[link].createdBy === req.session.user_id){
+        customLinks[link] = urlDatabase[link];
+      };
+    };
+    let templateVars = {
+      url: customLinks,
+      username: users[req.session.user_id]
+    };
+    res.render('urls_new', templateVars);
+  } else {
+    res.status(401).send('Error: 401: You are not authorized, Please <a href="/"> Login </a>');
+  }
+});
+
+// Url Custom Page
+app.get('/urls/:id', (req,res) => {
+  if (!(urlDatabase[req.params.id])) {
+    res.status(404).send('Error: 404: Page not found. <a href="/"> Login </a>');
+    return;
+  } if (!req.session.user_id) {
+    res.status(401).send('Error: 401: You are not authorized, Please <a href="/"> Login </a>');
+    return;
+  } if (urlDatabase[req.params.id].createdBy !== req.session.user_id) {
+    res.status(403).send('Error: 403: This is not your link! Please <a href="/"> Go Back </a>');
+    return;
+  } if (userChecker(req.session.user_id)) {
+
+    let templateVars = {
+      url: req.params.id,
+      long: urlDatabase[req.params.id].longURL
+    };
+    res.render('urls_show', templateVars);
+    return;
+  }
+
 });
 
 // This is the short link that redirects to long url

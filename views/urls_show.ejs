@@ -2,24 +2,22 @@
 <html>
 <head>
   <title>TinyApp</title>
-  <header><%- include('partials/_header') %></header>
 </head>
 <body>
-  <p>Url:</p>
-  <ul>
-    <h3><a href='localhost:8080/u/<%= shortURL  %>'> localhost:8080/u/<%= shortURL  %></h3> </a>
-  </ul>
-    <p>Navigates to</p>
-  <ul>
-    <h3><a href='<%= longURL %>'><%= longURL  %></h3> </a>
-  </ul>
+<p>Url:</p>
 
-  <form action="/urls/<%= shortURL  %>/update" method="POST" style="margin:150px;">
-      <label for="newURL">Change the URL:</label>
-      <input id="newURL" type="text" name="newURL" placeholder="<%= longURL  %>" style="width: 300px">
-      <input type="submit" value="Submit">
-  </form>
-<br>
-<a href="http://localhost:8080/urls"> Back To Index</a>
+<h3><a href='/u/'> <%= url %></h3> </a>
+<p>Navigates to</p>
+<h3><a href=''><%= long %></h3> </a>
+
+<form action="/urls/<%= url  %>/update" method="POST">
+<input class="form-control" id="newURL" type="text" name="newURL" value="<%= long %>" style='width: 100%; background-color: #4F4F57; color: #A6E22E; height:28px'>
+</form>
+
+<form action="/urls/<%= url %>/delete" method="POST" align='right'>
+<input class="form-control" type="submit" name="newURL" value='Delete' style='width: 100%; background-color: #4F4F57; color:#FD971F; height:28px'>
+</form>
+
+<a href="/urls"> Back To Index</a>
 </body>
 </html>
