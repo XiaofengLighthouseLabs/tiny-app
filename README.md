@@ -1,7 +1,7 @@
-# Project Description
+# Tiny-App
 *This is the project for the second week of Lighthouse Labs*
 
-### Tiny-App
+### Project Description
 This three-day project will have you building a tiny (pun intended) web app using Node. The app will allow users to shorten long URLs much like TinyURL.com, bit.ly, and the like.
 
 Unlike last project where you build an HTTP Client which makes requests to the GitHub server, this one will have you building the HTTP Server to handle requests from the browser (client).
